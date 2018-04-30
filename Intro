@@ -1,0 +1,284 @@
+int makeArrayConsecutive2(int[] statues) {
+    Arrays.sort(statues);
+    int min=statues[0];
+    int max=statues[statues.length-1];
+    
+    int res=(max-min+1)-statues.length;
+    return res;
+}
+
+int matrixElementsSum(int[][] matrix) {
+        int l=matrix.length+1;
+        int sum=0;
+        for(int i=0;i<matrix.length;i++){
+                for(int j=0;j<matrix[i].length;j++){
+                        if(matrix[i][j]==0){
+                                matrix[i][j]=0;
+                                if(i+1<matrix.length)
+                                matrix[i+1][j]=0;
+                        }
+                        else sum+=matrix[i][j];
+                }
+        } 
+        return sum;
+}
+
+int commonCharacterCount(String s1, String s2) {
+StringBuilder sb2 = new StringBuilder(s2);
+int num = 0;
+for(int i = 0; i < s1.length(); i++ ){
+ int index = sb2.toString().indexOf(s1.charAt(i));
+ if (index > -1) {
+     num++;
+     sb2.deleteCharAt(index);
+ }
+}
+return num;
+}
+
+
+boolean isLucky(int n) {
+int tem=n,c=0;
+    while(tem!=0){
+        c++;
+        tem=tem/10;
+    }
+    int pow=(int)Math.pow(10,c/2);
+    int n1=n/pow;
+    int n2=n%pow;
+   n1=getSum(n1);
+    n2=getSum(n2);
+    return n1==n2;
+}
+
+int getSum(int a){
+    int rem=0,sum=0;
+    while(a!=0){
+        rem=a%10;
+        sum+=rem;
+        a=a/10;
+    }
+    
+    return sum;
+}
+
+int[] sortByHeight(int[] a) {
+    ArrayList<Integer> h=new ArrayList();
+    int p=0;
+    for(int i=0;i<a.length;i++){
+        if(a[i]!=-1)
+            h.add(a[i]);
+    }
+    
+    Collections.sort(h);
+    p=0;
+     for(int i=0;i<a.length;i++){
+        if(a[i]!=-1)
+        {
+            a[i]=h.get(p++);
+        }
+     }
+    return a;
+}
+
+int[] alternatingSums(int[] a) {
+    int sum1=0,sum2=0;
+    for(int i=0;i<a.length;i++){
+      if(i%2==0)sum2+=a[i];
+      else sum1+=a[i];
+    }
+    
+    int b[]=new int[2];
+    b[0]=sum2;
+    b[1]=sum1;
+    return b;
+}
+
+boolean areSimilar(int[] a, int[] b) {
+    if(a.length!=b.length)return false;
+    if(Arrays.equals(a, b))return true;
+    int c=0;
+    
+    int[] copyA = Arrays.copyOf(a, a.length);
+    int[] copyB = Arrays.copyOf(b, b.length);
+
+    // checking both contain the same elements...
+    Arrays.sort(copyA); Arrays.sort(copyB); 
+    
+    if(!Arrays.equals(copyA, copyB)) return false;
+    
+    for(int i=0;i<a.length;i++){
+            if(b[i]!=a[i])
+                c++;
+    }
+    
+    return c>2?false:true;
+}
+
+int arrayChange(int[] a) {
+    int l=0,moves=0;
+    for(int i=1;i<a.length;i++){
+        if(a[i]-a[i-1]<=0){
+            moves+=Math.abs(a[i]-a[i-1])+1;
+            a[i]=a[i-1]+1;
+            
+            System.out.println(a[i]);
+        }
+    }
+    
+    return moves;
+}
+
+boolean palindromeRearranging(String a) {
+    Set<Character> set=new HashSet();
+    int c=0;
+    for(int i=0;i<a.length();i++){
+        if(!set.contains(a.charAt(i)))
+            set.add(a.charAt(i));
+        else set.remove(a.charAt(i));
+    }
+    
+    return set.size()>1?false:true;
+}
+
+boolean areEquallyStrong(int yourLeft, int yourRight, int friendsLeft, int friendsRight) {
+    if(yourLeft==friendsLeft && yourRight==friendsRight || yourLeft==friendsRight && yourRight==friendsLeft)
+      return true;
+    else 
+      return false;
+}
+
+int avoidObstacles(int[] inputArray) {
+    var lst = inputArray.ToList();
+    for(int i = 1; i <= lst.Max() + 1; i++) { if(lst.All(n => n % i != 0)) {
+            return i;
+        }
+    }
+    return lst.Max() + 1;
+}
+
+int[] arrayReplace(int[] inputArray, int elemToReplace, int substitutionElem) {
+    int l=inputArray.length;
+    int[] m=new int[l];
+    for(int i=0;i<l;i++){
+        if(inputArray[i]==elemToReplace)
+            m[i]=substitutionElem;
+        else m[i]=inputArray[i];
+    }
+    
+    return m;
+    
+}
+
+boolean variableName(String name) {
+    if(Character.isDigit(name.charAt(0)))return false;
+    for(int i=0;i<name.length();i++){
+        if(!Character.isDigit(name.charAt(i)) && !Character.isLetter(name.charAt(i)) && name.charAt(i)!='_')
+            return false;
+    }
+    
+    return true;
+}
+
+String alphabeticShift(String inputString) {
+    StringBuilder sb=new StringBuilder();
+    for(int i=0;i<inputString.length();i++)
+    {
+        char d=inputString.charAt(i);
+        if(d=='z') 
+        sb.append('a');
+        else sb.append((char)(d+1));
+    }
+    return sb.toString();
+}
+
+boolean chessBoardCellColor(String cell1, String cell2) {
+    int d1=Math.abs(cell1.charAt(0)-cell2.charAt(0));
+    int d2=Math.abs(cell1.charAt(1)-cell2.charAt(1));
+    System.out.println(d1 +" " +d2);
+    if(d1==d2)return true;
+    if(d1%2!=0 && d2%2!=0)return true;
+    if(d1%2==0 && d2%2==0)return true;
+    return false;
+}
+
+int circleOfNumbers(int n, int firstNumber) {
+    return (firstNumber+n/2)%n;
+}
+
+int absoluteValuesSumMinimization(int[] a) {
+    if(a.length%2!=0)return a[a.length/2];
+    else return a[a.length/2-1];
+}
+
+int depositProfit(int deposit, int rate, int threshold) {
+    double sum=deposit;
+    int c=0;
+    while(sum<threshold){
+        sum+=(rate*sum)/100;
+        System.out.println(sum);
+        c++;
+    }
+    
+    return c;
+}
+
+int[] extractEachKth(int[] inputArray, int k) {
+    int j=0,l=inputArray.length-(inputArray.length)/k;
+    if(k==1)return new int[0];
+    int[] a=new int[l];
+    for(int i=0;i<inputArray.length;i++){
+        if((i+1)%k!=0)
+            a[j++]=inputArray[i];
+    }
+    return a;
+}
+
+char firstDigit(String inputString) {
+    for(int i=0;i<inputString.length();i++){
+        if(Character.isDigit(inputString.charAt(i))){
+            return (char)inputString.charAt(i);
+        }
+    }
+    return '0';
+}
+
+int differentSymbolsNaive(String s) {
+    Set<Character> n=new HashSet();
+    for(int i=0;i<s.length();i++){
+        if(!n.contains(s.charAt(i)))
+                n.add(s.charAt(i));
+    }
+    System.out.print(s.charAt(0));
+    return n.size();
+}
+
+int growingPlant(int upSpeed, int downSpeed, int desiredHeight) {
+    int sum=upSpeed,c=1;
+    while(sum<desiredHeight){
+        sum+=upSpeed-downSpeed;
+        c++;
+    }
+    return c;
+}
+
+int knapsackLight(int value1, int weight1, int value2, int weight2, int maxW) {
+    if(weight1+weight2<=maxW)
+        return value1+value2;
+    if(weight1<=maxW && weight2<=maxW)
+    {
+        return Math.max(value1, value2);
+    }
+   if(weight1<=maxW && weight2>maxW)
+       return value1;
+    else if (weight1>maxW && weight2<=maxW)
+        return value2;
+    
+    return 0;
+}
+
+String findEmailDomain(String address) {
+    String[] one=address.split("@");
+    return one[one.length-1];
+}
+
