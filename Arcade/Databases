@@ -1,0 +1,115 @@
+CREATE PROCEDURE projectsTeam()
+BEGIN
+	select distinct name from projectLog order by name ASC;
+END
+
+
+CREATE PROCEDURE automaticNotifications()
+    SELECT email
+    FROM users
+    WHERE UPPER(role) NOT IN ("admin", "premium")
+    ORDER BY email;
+    
+CREATE PROCEDURE mostExpensive()
+BEGIN
+	select r.name from( 
+    select id, name, price, quantity, (price*quantity) as res from Products
+    order by res desc, name asc limit 1)
+    r;
+END
+
+CREATE PROCEDURE volleyballResults()
+BEGIN
+	select * from results
+  order by wins asc;
+END
+
+CREATE PROCEDURE contestLeaderboard()
+BEGIN
+	select name from leaderboard 
+    order by score desc
+    limit 5 offset 3;
+END
+
+CREATE PROCEDURE gradeDistribution()
+BEGIN
+	select Name, ID 
+    from Grades
+    where
+        final>Midterm1+Midterm2 or
+        final>Midterm1*.25+.25*Midterm2+0.5*Final
+    order by Substring(name,1,3);
+END
+
+CREATE PROCEDURE mischievousNephews()
+BEGIN
+	select weekday(mischief_date) as weekday,mischief_date, author, title
+    from mischief 
+    order by weekday, field(author,"Huey", "Dewey","Louie"),
+     mischief_date,title ;
+END
+
+CREATE PROCEDURE suspectsInvestigation()
+BEGIN
+	select id, name,surname
+    from Suspect
+    where height<=170 and Name LIKE 'B%' and surname LIKE 'Gre_n';
+END
+
+CREATE PROCEDURE suspectsInvestigation2()
+BEGIN
+	select id, name, surname from Suspect 
+    where height<=170 or name not like 'B%' or surname not like 'Gre_n'
+    order by id asc;
+END
+
+CREATE PROCEDURE securityBreach()
+BEGIN
+	select first_name,second_name,attribute
+    from users
+     WHERE attribute REGEXP BINARY CONCAT('^.{1,}(\%', first_name,'\_',second_name, '\%).{0,}$')
+    ORDER by attribute;
+END
+
+CREATE PROCEDURE testCheck()
+BEGIN
+    SELECT id, IF (given_answer is NOT NULL,IF (correct_answer=given_answer, 'correct','incorrect'),'no answer') AS checks
+    FROM answers
+    ORDER BY id;
+END
+    
+CREATE PROCEDURE expressionsVerification()
+BEGIN
+	SELECT r.id, r.a,r.b,r.operation, r.c
+    FROM (
+        SELECT 
+        id,a,b , operation, c,case when operation = '+' THEN  a + b
+            when operation = '-' THEN  a - b
+            when operation = '/' THEN  a / b
+            when operation = '*' THEN  a * b END as res
+        FROM expressions
+    ) r
+    where r.res=r.c
+    order by r.id;
+END
+
+CREATE PROCEDURE newsSubscribers()
+BEGIN
+	SELECT subscriber
+  FROM half_year
+  where newspaper like "%Daily%"
+  UNION
+  SELECT subscriber
+  FROM full_year
+  where newspaper like "%Daily%"
+  ORDER BY subscriber asc;
+ END
+
+CREATE PROCEDURE itemCounts()
+BEGIN
+	select distinct  item_name, item_type, count(item_type) as item_count 
+  from availableItems 
+  group by item_type, item_name
+  order by item_type;
+END
+
