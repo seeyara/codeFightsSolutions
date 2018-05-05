@@ -113,3 +113,62 @@ BEGIN
   order by item_type;
 END
 
+CREATE PROCEDURE usersByContinent()
+BEGIN
+	select continent, sum(users) as users from countries
+    group by continent
+    order by users desc;
+    
+END
+
+CREATE PROCEDURE movieDirectors()
+BEGIN
+	SELECT distinct r.director 
+    FROM (
+        SELECT director, sum(oscars) as oscars
+        FROM moviesInfo
+        WHERE year > 2000
+        GROUP BY director
+    )r WHERE r.oscars > 2
+    order by r.director asc;
+END
+
+CREATE PROCEDURE travelDiary()
+BEGIN
+	select group_concat(distinct country order by country asc) as countries from diary;
+END
+
+CREATE PROCEDURE soccerPlayers()
+BEGIN
+	select group_concat(CONCAT(first_name, " ", surname, " #", player_number) ORDER BY player_number asc SEPARATOR '; ') as players from soccer_team;
+END
+
+CREATE PROCEDURE marketReport()
+BEGIN
+	SELECT case when r.country is NULL then 'Total:' else r.country END as country, r.competitors
+    FROM (
+        SELECT country, sum(1) as competitors
+        FROM foreignCompetitors
+        group by country WITH ROLLUP
+    )r ;
+END
+
+CREATE PROCEDURE websiteHacking()
+    SELECT id,login,name
+    FROM users
+    WHERE type='user'
+    or type!='user'
+    ORDER BY id
+
+
+CREATE PROCEDURE legsCount()
+    SELECT sum(case when type='human' then 2 when type='cat' then 4 when type='dog' then 4 ELSE 0 END) as summary_legs
+    FROM creatures
+    ORDER BY id;
+    
+CREATE PROCEDURE combinationLock()
+    SELECT
+    CEIL(ROUND(exp(sum(log(CHAR_LENGTH(characters)))),2)) as combinations
+    from discs;
+    
+
