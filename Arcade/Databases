@@ -94,8 +94,7 @@ BEGIN
 END
 
 CREATE PROCEDURE newsSubscribers()
-BEGIN
-	SELECT subscriber
+  SELECT subscriber
   FROM half_year
   where newspaper like "%Daily%"
   UNION
@@ -103,27 +102,21 @@ BEGIN
   FROM full_year
   where newspaper like "%Daily%"
   ORDER BY subscriber asc;
- END
+
 
 CREATE PROCEDURE itemCounts()
-BEGIN
-	select distinct  item_name, item_type, count(item_type) as item_count 
+  SELECT distinct  item_name, item_type, count(item_type) as item_count 
   from availableItems 
   group by item_type, item_name
   order by item_type;
-END
 
 CREATE PROCEDURE usersByContinent()
-BEGIN
-	select continent, sum(users) as users from countries
+    select continent, sum(users) as users from countries
     group by continent
     order by users desc;
-    
-END
 
 CREATE PROCEDURE movieDirectors()
-BEGIN
-	SELECT distinct r.director 
+    SELECT distinct r.director 
     FROM (
         SELECT director, sum(oscars) as oscars
         FROM moviesInfo
@@ -131,27 +124,23 @@ BEGIN
         GROUP BY director
     )r WHERE r.oscars > 2
     order by r.director asc;
-END
 
 CREATE PROCEDURE travelDiary()
-BEGIN
-	select group_concat(distinct country order by country asc) as countries from diary;
-END
+    SELECT group_concat(distinct country order by country asc) as countries 
+    FROM diary;
 
 CREATE PROCEDURE soccerPlayers()
-BEGIN
-	select group_concat(CONCAT(first_name, " ", surname, " #", player_number) ORDER BY player_number asc SEPARATOR '; ') as players from soccer_team;
-END
+    SELECT group_concat(CONCAT(first_name, " ", surname, " #", player_number) 
+    order by player_number asc SEPARATOR '; ') as players 
+    from soccer_team;
 
 CREATE PROCEDURE marketReport()
-BEGIN
-	SELECT case when r.country is NULL then 'Total:' else r.country END as country, r.competitors
-    FROM (
-        SELECT country, sum(1) as competitors
+    select case when r.country is NULL then 'Total:' else r.country END as country, r.competitors
+    from (
+        select country, sum(1) as competitors
         FROM foreignCompetitors
-        group by country WITH ROLLUP
+        group by country with rollup
     )r ;
-END
 
 CREATE PROCEDURE websiteHacking()
     SELECT id,login,name
@@ -171,4 +160,38 @@ CREATE PROCEDURE combinationLock()
     CEIL(ROUND(exp(sum(log(CHAR_LENGTH(characters)))),2)) as combinations
     from discs;
     
+CREATE PROCEDURE interestClub()
+    SELECT name
+    FROM people_interests
+    WHERE interests & 1 AND interests & 8
+    ORDER BY name
 
+CREATE PROCEDURE personalHobbies()
+    SELECT name from people_hobbies
+    WHERE hobbies like '%sports% AND hobbies like '%reading%';
+
+CREATE PROCEDURE booksCatalogs()
+    SELECT substring_index(ExtractValue(xml_doc, '//catalog//book//author'),' ', 2) as author
+    FROM catalogs
+    order by author;
+
+CREATE PROCEDURE habitatArea()
+    set @g := (SELECT CONCAT("MULTIPOINT(", group_concat(x,' ',y, '') , ")") FROM places);
+    SELECT ST_AREA(ST_ConvexHull(ST_GeomFromText(@g))) as area;
+    
+CREATE PROCEDURE orderOfSuccession()
+    select case when gender='M' then concat('King ', name) when gender='F' then concat('Queen ',name) END as name 
+    from Successors
+    order by birthday asc;
+    
+    
+CREATE PROCEDURE orderingEmails()
+    SELECT r.id, r.email_title, IF(r.short_size lIKE '%bytes%','0 Kb',r.short_size) as short_size
+    FROM (    
+	SELECT id, email_title, 
+    case
+    when size >= 1048576 THEN CONCAT(FLOOR(size / 1048576), ' Mb')
+    when size >= 1024 THEN CONCAT(FLOOR( size / 1024), ' Kb') 
+    ELSE  CONCAT(ROUND(size, 0), ' bytes') END as short_size
+    FROM emails
+    ORDER BY size desc ) r ;
